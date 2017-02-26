@@ -29,7 +29,9 @@ shinyUI(
 
       box("Monthly Payroll Employment",
           plotlyOutput("plot.payemp"),
-          color = "light-blue")
+          color = "light-blue"),
+      box("Quarterly GDP Growth Rate",
+          plotlyOutput("plot.gdp"))
       )
     )
   )
