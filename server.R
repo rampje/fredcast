@@ -12,6 +12,8 @@ fredr_key("0e510a57a0086df706ac9c8fb852b706")
 
 shinyServer(function(input, output){
   
+  
+  
   output$plot.unemp <- renderPlotly({
     unemp.model <- Arima(fredr_series(series_id = "UNRATE"), order = c(1,1,1))
     
@@ -21,13 +23,13 @@ shinyServer(function(input, output){
                ggtitle(" ") + xlim(2012,2018))
   })
   
-  output$modelSummary <- renderPrint({
+  output$unempSummary <- renderPrint({
     Arima(fredr_series(series_id = "UNRATE"), order = c(1,1,1))
   })
   
   
   output$plot.payemp <- renderPlotly({
-    payemp.model <- Arima(diff(fredr_series(series_id = "PAYEMS")), order=c(1,1,1))
+    payemp.model <- Arima(fredr_series(series_id = "PAYEMS"), order=c(1,1,1))
     
     payemp.fcst <- forecast(payemp.model)
     
@@ -35,8 +37,8 @@ shinyServer(function(input, output){
               ggtitle(" ") + xlim(2008, 2018))
   })
   
-  output$payempSum <- renderPrint({
-    Arima(diff(fredr_series(series_id = "PAYEMS")), order=c(1,1,1))
+  output$payempSummary <- renderPrint({
+    Arima(fredr_series(series_id = "PAYEMS"), order=c(1,1,1))
   })
   
   output$plot.gdp <- renderPlotly({
@@ -46,6 +48,23 @@ shinyServer(function(input, output){
     
     ggplotly(autoplot(gdp.fcst) + ylab("Real GDP Growth Rate") +
                ggtitle(" ") + xlim(2012, 2018))
+  })
+  
+  output$gdpSummary <- renderPrint({
+    Arima(fredr_series(series_id = "A191RL1Q225SBEA"), order=c(1,1,1))
+  })
+  
+  output$plot.cpi <- renderPlotly({
+    cpi.model <- Arima(fredr_series(series_id = "CPIAUCSL"), order = c(2,1,1))
+    
+    cpi.fcst <- forecast(cpi.model)
+    
+    ggplotly(autoplot(cpi.fcst) + ylab("CPI Growth Rate") +
+               ggtitle(" ") + xlim(2012, 2018))
+  })
+  
+  output$cpiSummary <- renderPrint({
+    Arima(fredr_series(series_id = "CPIAUCSL"), order=c(1,1,1))
   })
   
   
