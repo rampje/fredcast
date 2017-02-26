@@ -5,6 +5,18 @@ library(plotly)
 library(fredr)
 library(DT)
 
+fitModel <- function(seriesID){
+  if(seriesID == "UNRATE"){
+    Arima(fredr_series(series_id = "UNRATE"), order = c(1,1,1))
+  } else if(seriesID == "PAYEMS"){
+    Arima(fredr_series(series_id = "PAYEMS"), order=c(1,1,1))
+  } else if(seriesID == "A191RL1Q225SBEA"){
+    Arima(fredr_series(series_id = "A191RL1Q225SBEA"), order = c(2,1,1))
+  } else if(seriesID == "CPIAUCSL"){
+    Arima(fredr_series(series_id = "CPIAUCSL"), order = c(2,1,1))
+  }
+}
+
 
 fredr_key("0e510a57a0086df706ac9c8fb852b706")
 #gdp <- 
@@ -13,22 +25,18 @@ fredr_key("0e510a57a0086df706ac9c8fb852b706")
 
 shinyServer(function(input, output){
   
-  
-  
   output$plot.unemp <- renderPlot({
-    unemp.model <- Arima(fredr_series(series_id = "UNRATE"), order = c(1,1,1))
+    unemp.model <- fitModel("UNRATE")
     
     unemp.fcst <- forecast(unemp.model)
     
     autoplot(unemp.fcst) + ylab("Unemployment Rate") + ggtitle(" ")
   })
-  
   output$unempSummary <- renderPrint({
-    Arima(fredr_series(series_id = "UNRATE"), order = c(1,1,1))
+    fitModel("UNRATE")
   })
-  
   output$unempForecastTable <- renderDataTable({
-    unemp.model <- Arima(fredr_series(series_id = "UNRATE"), order = c(1,1,1))
+    unemp.model <- fitModel("UNRATE")
     
     unemp.fcst <- forecast(unemp.model)
     unemp.fcst <- data.frame(unemp.fcst)
@@ -50,11 +58,9 @@ shinyServer(function(input, output){
     autoplot(payemp.fcst) + ylab("Payroll Employment") +
             ggtitle(" ") + xlim(1990, 2018) + ylim(105000, 155000)
   })
-  
   output$payempSummary <- renderPrint({
     Arima(fredr_series(series_id = "PAYEMS"), order=c(1,1,1))
   })
-  
   output$payempForecastTable <- renderDataTable({
     payemp.model <- Arima(fredr_series(series_id = "PAYEMS"), order = c(1,1,1))
     

@@ -15,10 +15,11 @@ shinyUI(
   dashboardPage(
     skin = "blue",
 
-    dashboardHeader(title = "FREDcast dashboard",
+    dashboardHeader(title = h3("FREDcast dashboard"),
                     titleWidth = 300),
   
-    dashboardSidebar("blah"),
+    dashboardSidebar(h4("This shiny dashboard uses time series models to forecast economic time series in FRED's 'FREDcast' game"),
+                     width = 400),
     
     dashboardBody(
       
