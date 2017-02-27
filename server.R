@@ -1,13 +1,6 @@
-library(shiny)
-library(shinydashboard)
-library(forecast)
-library(plotly)
-library(fredr)
-library(DT)
-
 source("functions.R")
 
-fredr_key("0e510a57a0086df706ac9c8fb852b706")
+fredr_key(key)
 
 shinyServer(function(input, output){
   # unemployment widget

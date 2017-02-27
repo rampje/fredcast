@@ -1,5 +1,19 @@
+library(shiny)
+library(shinydashboard)
+library(forecast)
+library(plotly)
+library(fredr)
+library(DT)
+
+key <- "0e510a57a0086df706ac9c8fb852b706"
+
+unempTabs <- c("plot.unemp","unempSummary", "unempForecastTable")
+payempTabs <- c("plot.payemp","payempSummary","payempForecastTable")
+gdpTabs <- c("plot.gdp","gdpSummary","gdpForecastTable")
+cpiTabs <- c("plot.cpi","cpiSummary","cpiForecastTable")
 
 fitModel <- function(seriesID){
+  # currently only fitting ARIMA models
   if(seriesID == "UNRATE"){
     Arima(fredr_series(series_id = "UNRATE"), order = c(1,1,1))
   } else if(seriesID == "PAYEMS"){
@@ -10,7 +24,6 @@ fitModel <- function(seriesID){
     Arima(fredr_series(series_id = "CPIAUCSL"), order = c(2,1,1))
   }
 }
-
 plotModel <- function(model){
   
   fcst <- forecast(model)
@@ -34,7 +47,6 @@ plotModel <- function(model){
     autoplot(fcst) + ylab("Unemployment Rate") + ggtitle(" ")
   }
 }
-
 forecastTable <- function(model){
   fcst <- forecast(model)
   
@@ -71,5 +83,41 @@ forecastTable <- function(model){
     fcst$Date <- fcst.dates
     
     datatable(head(fcst), rownames = FALSE)
+  }
+}
+widget <- function(tabs){
+  
+  if(grepl("unemp", tabs[1])){
+    tabBox(title = "Unemployment Forecast",
+           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "350px"),
+                    color = "light-blue"),
+           tabPanel("Model Summary",
+                    verbatimTextOutput(tabs[2])),
+           tabPanel("Forecast Table",
+                    dataTableOutput(tabs[3])))
+  } else if(grepl("payemp", tabs[1])){
+    tabBox(title = "Monthly Payroll Employment",
+           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "350px"),
+                    color = "light-blue"),
+           tabPanel("Model Summary",
+                    verbatimTextOutput(tabs[2])),
+           tabPanel("Forecast Table",
+                    dataTableOutput(tabs[3])))
+  } else if(grepl("gdp", tabs[1])){
+    tabBox(title = "Quarterly GDP Growth Rate",
+           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "350px"),
+                    color = "light-blue"),
+           tabPanel("Model Summary",
+                    verbatimTextOutput(tabs[2])),
+           tabPanel("Forecast Table",
+                    dataTableOutput(tabs[3])))
+  } else if(grepl("cpi", tabs[1])){
+    tabBox(title = "Consumer Price Index",
+           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "350px"),
+                    color = "light-blue"),
+           tabPanel("Model Summary",
+                    verbatimTextOutput(tabs[2])),
+           tabPanel("Forecast Table",
+                    dataTableOutput(tabs[3])))
   }
 }
