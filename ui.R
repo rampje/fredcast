@@ -5,11 +5,7 @@ library(plotly)
 library(fredr)
 library(DT)
 
-unemp.model <- Arima(fredr_series(series_id = "UNRATE"), order = c(1,1,1))
-unemp.fcst <- forecast(unemp.model)
-unrate <- round(unemp.fcst$mean[2], 1) 
-
-datatable(data.frame(unemp.fcst))
+unempTabs <- c("plot.unemp","unempSummary", "unempForecastTable")
 
 shinyUI(
   dashboardPage(
