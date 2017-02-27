@@ -15,13 +15,13 @@ cpiTabs <- c("plot.cpi","cpiSummary","cpiForecastTable")
 fitModel <- function(seriesID){
   # currently only fitting ARIMA models
   if(seriesID == "UNRATE"){
-    Arima(fredr_series(series_id = "UNRATE"), order = c(1,1,1))
+    auto.arima(fredr_series(series_id = "UNRATE"))
   } else if(seriesID == "PAYEMS"){
-    Arima(fredr_series(series_id = "PAYEMS"), order=c(1,1,1))
+    auto.arima(fredr_series(series_id = "PAYEMS"))
   } else if(seriesID == "A191RL1Q225SBEA"){
-    Arima(fredr_series(series_id = "A191RL1Q225SBEA"), order = c(2,1,1))
+    auto.arima(fredr_series(series_id = "A191RL1Q225SBEA"))
   } else if(seriesID == "CPIAUCSL"){
-    Arima(fredr_series(series_id = "CPIAUCSL"), order = c(2,1,1))
+    auto.arima(fredr_series(series_id = "CPIAUCSL"))
   }
 }
 plotModel <- function(model){
