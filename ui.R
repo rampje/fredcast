@@ -18,7 +18,7 @@ shinyUI(
     dashboardHeader(title = h3("FREDcast dashboard"),
                     titleWidth = 300),
   
-    dashboardSidebar(h4("This shiny dashboard uses time series models to forecast economic time series in FRED's 'FREDcast' game"),
+    dashboardSidebar(h3("This shiny dashboard uses time series models to forecast economic time series in FRED's 'FREDcast' game"),
                      width = 400),
     
     dashboardBody(
