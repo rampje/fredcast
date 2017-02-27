@@ -89,7 +89,7 @@ widget <- function(tabs){
   
   if(grepl("unemp", tabs[1])){
     tabBox(title = "Unemployment Forecast",
-           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "350px"),
+           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "330px"),
                     color = "light-blue"),
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
@@ -97,7 +97,7 @@ widget <- function(tabs){
                     dataTableOutput(tabs[3])))
   } else if(grepl("payemp", tabs[1])){
     tabBox(title = "Monthly Payroll Employment",
-           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "350px"),
+           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "330px"),
                     color = "light-blue"),
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
@@ -105,7 +105,7 @@ widget <- function(tabs){
                     dataTableOutput(tabs[3])))
   } else if(grepl("gdp", tabs[1])){
     tabBox(title = "Quarterly GDP Growth Rate",
-           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "350px"),
+           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "330px"),
                     color = "light-blue"),
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
@@ -113,7 +113,7 @@ widget <- function(tabs){
                     dataTableOutput(tabs[3])))
   } else if(grepl("cpi", tabs[1])){
     tabBox(title = "Consumer Price Index",
-           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "350px"),
+           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "330px"),
                     color = "light-blue"),
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),

@@ -36,12 +36,16 @@ shinyUI(
                width = 1))),
     
     dashboardBody(
-      widget(unempTabs),
-      widget(payempTabs),
-      widget(gdpTabs),
-      widget(cpiTabs),
+      column(widget(unempTabs),
+             widget(payempTabs),
+             width = 8),
+      column(widget(gdpTabs),
+              widget(cpiTabs),
+             width = 8),
       
-      tags$a(href="https://github.com/rampje/fredcast", "Click for Code on Github")
+      fluidRow(tags$a(href="https://github.com/rampje/fredcast", "Shiny app code on Github"))
+      #fluidRow(tags$a(href="https://research.stlouisfed.org/useraccount/fredcast/", "FREDcast Page"))
+             
     )
   )
 )
