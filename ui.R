@@ -5,7 +5,48 @@ library(plotly)
 library(fredr)
 library(DT)
 
+widget <- function(tabs){
+  
+  if(grepl("unemp", tabs[1])){
+    tabBox(title = "Unemployment Forecast",
+           tabPanel("Forecast Graph", plotOutput(tabs[1]),
+                    color = "light-blue"),
+           tabPanel("Model Summary",
+                    verbatimTextOutput(tabs[2])),
+           tabPanel("Forecast Table",
+                    dataTableOutput(tabs[3])))
+  } else if(grepl("payemp", tabs[1])){
+    tabBox(title = "Monthly Payroll Employment",
+           tabPanel("Forecast Graph", plotOutput(tabs[1]),
+                    color = "light-blue"),
+           tabPanel("Model Summary",
+                    verbatimTextOutput(tabs[2])),
+           tabPanel("Forecast Table",
+                    dataTableOutput(tabs[3])))
+  } else if(grepl("gdp", tabs[1])){
+    tabBox(title = "Quarterly GDP Growth Rate",
+           tabPanel("Forecast Graph", plotOutput(tabs[1]),
+                    color = "light-blue"),
+           tabPanel("Model Summary",
+                    verbatimTextOutput(tabs[2])),
+           tabPanel("Forecast Table",
+                    dataTableOutput(tabs[3])))
+  } else if(grepl("cpi", tabs[1])){
+    tabBox(title = "Consumer Price Index",
+           tabPanel("Forecast Graph", plotOutput(tabs[1]),
+                    color = "light-blue"),
+           tabPanel("Model Summary",
+                    verbatimTextOutput(tabs[2])),
+           tabPanel("Forecast Table",
+                    dataTableOutput(tabs[3])))
+  }
+}
+
 unempTabs <- c("plot.unemp","unempSummary", "unempForecastTable")
+payempTabs <- c("plot.payemp","payempSummary","payempForecastTable")
+gdpTabs <- c("plot.gdp","gdpSummary","gdpForecastTable")
+cpiTabs <- c("plot.cpi","cpiSummary","cpiForecastTable")
+
 
 shinyUI(
   dashboardPage(
@@ -18,38 +59,10 @@ shinyUI(
                      width = 400),
     
     dashboardBody(
-      
-      tabBox(title = "Unemployment Forecast",
-             tabPanel("Forecast Graph", plotOutput("plot.unemp"),
-                      color = "light-blue"),
-             tabPanel("Model Summary",
-                      verbatimTextOutput("unempSummary")),
-             tabPanel("Forecast Table",
-                      dataTableOutput("unempForecastTable"))),
-      
-      tabBox(title = "Monthly Payroll Employment",
-             tabPanel("Forecast Graph", plotOutput("plot.payemp"),
-                      color = "light-blue"),
-             tabPanel("Model Summary",
-                      verbatimTextOutput("payempSummary")),
-             tabPanel("Forecast Table",
-                      dataTableOutput("payempForecastTable"))),
-      
-      tabBox(title = "Quarterly GDP Growth Rate",
-             tabPanel("Forecast Graph", plotOutput("plot.gdp"),
-                      color = "light-blue"),
-             tabPanel("Model Summary",
-                      verbatimTextOutput("gdpSummary")),
-             tabPanel("Forecast Table",
-                      dataTableOutput("gdpForecastTable"))),
-      
-      tabBox(title = "Consumer Price Index",
-             tabPanel("Forecast Graph", plotOutput("plot.cpi"),
-                      color = "light-blue"),
-             tabPanel("Model Summary",
-                      verbatimTextOutput("cpiSummary")),
-             tabPanel("Forecast Table",
-                      dataTableOutput("cpiForecastTable")))
+      widget(unempTabs),
+      widget(payempTabs),
+      widget(gdpTabs),
+      widget(cpiTabs)
       )
     )
   )
