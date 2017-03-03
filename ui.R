@@ -1,9 +1,14 @@
 source("functions.R")
 
-"UNRATE" %>% fitModel %>% forecast %>% data.frame -> unfcst
-"PAYEMS" %>% fitModel %>% forecast %>% data.frame -> payfcst
-"A191RL1Q225SBEA" %>% fitModel %>% forecast %>% data.frame -> gdpfcst
-"CPIAUCSL" %>% fitModel %>% forecast %>% data.frame -> cpifcst
+unemp.mod <- readRDS("unrate-AutoArima.rds")
+payemp.mod <- readRDS("payems-AutoArima.rds")
+gdp.mod <- readRDS("gdp-AutoArima.rds")
+cpi.mod <- readRDS("cpi-AutoArima.rds")
+
+unemp.mod %>% forecast %>% data.frame -> unfcst
+payemp.mod %>% forecast %>% data.frame -> payfcst
+gdp.mod  %>% forecast %>% data.frame -> gdpfcst
+cpi.mod %>% forecast %>% data.frame -> cpifcst
 
 shinyUI(
   dashboardPage(
@@ -38,10 +43,10 @@ shinyUI(
     dashboardBody(
       column(widget(unempTabs),
              widget(payempTabs),
-             width = 8),
+             width = 11),
       column(widget(gdpTabs),
               widget(cpiTabs),
-             width = 8),
+             width = 11),
       
       fluidRow(tags$a(href="https://github.com/rampje/fredcast", "Shiny app code on Github"))
       #fluidRow(tags$a(href="https://research.stlouisfed.org/useraccount/fredcast/", "FREDcast Page"))

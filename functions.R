@@ -7,10 +7,14 @@ library(DT)
 
 key <- "0e510a57a0086df706ac9c8fb852b706"
 
-unempTabs <- c("plot.unemp","unempSummary", "unempForecastTable")
-payempTabs <- c("plot.payemp","payempSummary","payempForecastTable")
-gdpTabs <- c("plot.gdp","gdpSummary","gdpForecastTable")
-cpiTabs <- c("plot.cpi","cpiSummary","cpiForecastTable")
+unempTabs <- c("plot.unemp","unempSummary", 
+               "unempForecastTable","unempResiduals")
+payempTabs <- c("plot.payemp","payempSummary",
+                "payempForecastTable","payempResiduals")
+gdpTabs <- c("plot.gdp","gdpSummary",
+             "gdpForecastTable","gdpResiduals")
+cpiTabs <- c("plot.cpi","cpiSummary",
+             "cpiForecastTable","cpiResiduals")
 
 fitModel <- function(seriesID){
   # currently only fitting ARIMA models
@@ -94,7 +98,9 @@ widget <- function(tabs){
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
            tabPanel("Forecast Table",
-                    dataTableOutput(tabs[3])))
+                    dataTableOutput(tabs[3])),
+           tabPanel("Residuals",
+                    plotOutput(tabs[4])))
   } else if(grepl("payemp", tabs[1])){
     tabBox(title = "Monthly Payroll Employment",
            tabPanel("Forecast Graph", plotOutput(tabs[1], height = "330px"),
@@ -102,7 +108,9 @@ widget <- function(tabs){
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
            tabPanel("Forecast Table",
-                    dataTableOutput(tabs[3])))
+                    dataTableOutput(tabs[3])),
+           tabPanel("Residuals",
+                    plotOutput(tabs[4])))
   } else if(grepl("gdp", tabs[1])){
     tabBox(title = "Quarterly GDP Growth Rate",
            tabPanel("Forecast Graph", plotOutput(tabs[1], height = "330px"),
@@ -110,7 +118,9 @@ widget <- function(tabs){
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
            tabPanel("Forecast Table",
-                    dataTableOutput(tabs[3])))
+                    dataTableOutput(tabs[3])),
+           tabPanel("Residuals",
+                    plotOutput(tabs[4])))
   } else if(grepl("cpi", tabs[1])){
     tabBox(title = "Consumer Price Index",
            tabPanel("Forecast Graph", plotOutput(tabs[1], height = "330px"),
@@ -118,6 +128,8 @@ widget <- function(tabs){
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
            tabPanel("Forecast Table",
-                    dataTableOutput(tabs[3])))
+                    dataTableOutput(tabs[3])),
+           tabPanel("Residuals",
+                    plotOutput(tabs[4])))
   }
 }
