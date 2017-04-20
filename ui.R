@@ -26,7 +26,7 @@ shinyUI(
       dateInput("date", 
                 label = "Select Month to Forecast:", 
                 value = "2014-03-01"),
-      "March 2017 Forecasts:",
+      "April 2017 Forecasts:",
       fluidRow(valueBox(paste0(round(unfcst$Point.Forecast[2], 2), "%"),
                "Unemployment Rate", 
                 width = 1)),
@@ -41,6 +41,9 @@ shinyUI(
                width = 1))),
     
     dashboardBody(
+      
+      #mainPanel("This shiny app contains models and forecasts for the economic variables in the forecasting game fredcast"),
+      
       column(widget(unempTabs),
              widget(payempTabs),
              width = 11),

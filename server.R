@@ -8,7 +8,7 @@ gdp.mod <- readRDS("gdp-AutoArima.rds")
 cpi.mod <- readRDS("cpi-AutoArima.rds")
 
 shinyServer(function(input, output){
-  # unemployment widget
+  # unemployment wwidget
   output$plot.unemp <- renderPlot(unemp.mod %>% plotModel)
   output$unempSummary <- renderPrint(unemp.mod)
   output$unempForecastTable <- renderDataTable(unemp.mod %>% forecastTable)
