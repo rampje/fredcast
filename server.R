@@ -8,7 +8,22 @@ gdp.mod <- readRDS("gdp-AutoArima.rds")
 cpi.mod <- readRDS("cpi-AutoArima.rds")
 
 shinyServer(function(input, output){
-  # unemployment wwidget
+  
+  output$menu <- renderMenu({
+    sidebarMenu(
+      menuItem("Unemployment", selected = TRUE,
+               tabName="m1", icon=icon("line-chart")),
+      menuItem("Payroll Employment", 
+               tabName="m2", icon=icon("line-chart"))
+    )
+  })
+  
+  output$payroll_emp <- renderValueBox({
+    valueBox(
+      paste0(25, "%"), color="blue", 
+      "Payroll Employoment")
+  })
+  # unemployment widget
   output$plot.unemp <- renderPlot(unemp.mod %>% plotModel)
   output$unempSummary <- renderPrint(unemp.mod)
   output$unempForecastTable <- renderDataTable(unemp.mod %>% forecastTable)

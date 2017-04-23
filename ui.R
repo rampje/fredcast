@@ -20,10 +20,11 @@ shinyUI(
     dashboardSidebar(
       "This shiny app uses time series models to forecast economic indicators in FRED's 'FREDcast' game",
       width = 200,
+      sidebarMenuOutput("menu"),
       dateRangeInput("dateRange",
                      label = "Graph Date Range",
                      start = "1990-01-01", end = "2018-12-31"),
-      dateInput("date", 
+      dateInput("date",
                 label = "Select Month to Forecast:", 
                 value = "2014-03-01"),
       "April 2017 Forecasts:",
@@ -42,16 +43,23 @@ shinyUI(
     
     dashboardBody(
       
+      fluidRow(
+        valueBox(3*5, "Unemployment"),
+        valueBoxOutput("payroll_emp")
+      ),
       #mainPanel("This shiny app contains models and forecasts for the economic variables in the forecasting game fredcast"),
+      tabItems(
+        tabItem(tabName = "m1", widget(unempTabs)),
+        tabItem(tabName = "m2", widget(payempTabs))
+        )
+      #column(widget(unempTabs),
+      #       widget(payempTabs),
+      #       width = 11),
+      #column(widget(gdpTabs),
+      #        widget(cpiTabs),
+      #       width = 11),
       
-      column(widget(unempTabs),
-             widget(payempTabs),
-             width = 11),
-      column(widget(gdpTabs),
-              widget(cpiTabs),
-             width = 11),
-      
-      fluidRow(tags$a(href="https://github.com/rampje/fredcast", "Shiny app code on Github"))
+      #tags$a(href="https://github.com/rampje/fredcast", "Shiny app code on Github")
       #fluidRow(tags$a(href="https://research.stlouisfed.org/useraccount/fredcast/", "FREDcast Page"))
              
     )
