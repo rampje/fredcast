@@ -53,39 +53,38 @@ shinyUI(
         valueBoxOutput("gdp", width = 3),
         valueBoxOutput("cpi", width = 3), 
         strong("Click on tabs for more information about an indicator"),
-        width = 11),
+        width = 11)),
       
       #mainPanel("This shiny app contains models and forecasts for the economic variables in the forecasting game fredcast"),
       tabItems(
         tabItem(tabName = "m1", 
-                tags$br(""),
-                tags$br(""),
-                tags$br(""),
-                tags$br(""),
-                tags$br(""),
-                tags$br(""),
-                tags$br(""),
-                dygraphOutput("plot.unemp", height = "330px", width = "1200px"),
-                tags$br(""),
-                widget(unempTabs)),
+                box(dygraphOutput("plot.unemp"),
+                    width = 6),
+                box(dataTableOutput("unempForecastTable"),
+                    width = 5),
+                box(widget(unempTabs),
+                    width = 11)),
+        tabItem(tabName = "m2",
+                box(dygraphOutput("plot.payemp"),
+                    width = 6),
+                box(widget(payempTabs),
+                    width = 5)),
+        tabItem(tabName = "m3",
+                box(dygraphOutput("plot.gdp"),
+                    width = 6),
+                box(widget(gdpTabs),
+                    width = 5)),
+        tabItem(tabName = "m4",
+                box(dygraphOutput("plot.cpi"),
+                    width = 6),
+                box(widget(cpiTabs),
+                    width = 5))),
       
-        tabItem(tabName = "m2", widget(payempTabs)),
-        tabItem(tabName = "m3", widget(gdpTabs)),
-        tabItem(tabName = "m4", widget(cpiTabs))
-        )
+      fluidRow()
       )
-      #column(widget(unempTabs),
-      #       widget(payempTabs),
-      #       width = 11),
-      #column(widget(gdpTabs),
-      #        widget(cpiTabs),
-      #       width = 11),
-      
-      #fluidRow(tags$a(href="https://research.stlouisfed.org/useraccount/fredcast/", "FREDcast Page"))
-             
     )
   )
-)
+
   
 
      

@@ -70,22 +70,26 @@ shinyServer(function(input, output){
   gdp_array <- gen_array(gdpfcst)
   cpi_array <- gen_array(cpifcst)
   # unemployment widget
-  output$plot.unemp <- renderDygraph(unemp_array %>% plotModel)
+  output$plot.unemp <- renderDygraph(unemp_array %>% 
+                                       plotModel("UNRATE"))
   output$unempSummary <- renderPrint(unemp.mod)
   output$unempForecastTable <- renderDataTable(unemp.mod %>% forecastTable)
   output$unedmpResiduals <- renderPlot(unemp.mod %>% checkresiduals)
   # payroll employment widget
-  output$plot.payemp <- renderDygraph(payemp_array %>% plotModel)
+  output$plot.payemp <- renderDygraph(payemp_array %>% 
+                                        plotModel("PAYEMS"))
   output$payempSummary <- renderPrint(payemp.mod)
   output$payempForecastTable <- renderDataTable(payemp.mod %>% forecastTable)
   output$payempResiduals <- renderPlot(payemp.mod %>% checkresiduals)
   # gdp widget
-  output$plot.gdp <- renderDygraph(gdp_array %>% plotModel)
+  output$plot.gdp <- renderDygraph(gdp_array %>% 
+                                     plotModel("A191RL1Q225SBEA"))
   output$gdpSummary <- renderPrint(gdp.mod)
   output$gdpForecastTable <- renderDataTable(cpi.mod %>% forecastTable)
   output$gdpResiduals <- renderPlot(gdp.mod %>% checkresiduals)
   # cpi widget
-  output$plot.cpi <- renderDygraph(cpi_array %>% plotModel)
+  output$plot.cpi <- renderDygraph(cpi_array %>% 
+                                     plotModel("CPIAUCSL"))
   output$cpiSummary <- renderPrint(cpi.mod)
   output$cpiForecastTable <- renderDataTable(cpi.mod %>% forecastTable)
   output$cpiResiduals <- renderPlot(cpi.mod %>% checkresiduals)

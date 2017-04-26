@@ -40,9 +40,22 @@ gen_array <- function(forecast_obj){
   
   cbind(actuals, lower, upper, point_forecast)
 }
-plotModel <- function(ts_array){
-    dygraph(ts_array) %>% dyRangeSelector() %>% 
-    dyRangeSelector(dateWindow = c("2007-01-01", "2019-4-01")) %>%
+plotModel <- function(ts_array, series_name){
+    
+    if(series_name=="UNRATE"){
+      graph_title <- "Unemployment Rate"
+    } else if(series_name=="PAYEMS"){
+        graph_title <- "Payroll Employment"
+    } else if(series_name=="A191RL1Q225SBEA"){
+        graph_title <- "GDP Growth Rate"
+    } else {
+        graph_title <- "Consumer Price Index"
+    }
+  
+    dygraph(ts_array, main = graph_title) %>% 
+      dyRangeSelector() %>% 
+      dyRangeSelector(height = 40,
+                      dateWindow = c("2011-04-01", "2019-4-01")) %>%
       dySeries(name = "actuals", label = "actual") %>%
       dySeries(c("lower","point_forecast","upper"), label = "Predicted") %>%
       dyLegend(show = "always", hideOnMouseOut = FALSE) %>%
@@ -95,8 +108,6 @@ widget <- function(tabs){
     tabBox(title = "Unemployment Forecast",
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
-           tabPanel("Forecast Table",
-                    dataTableOutput(tabs[3])),
            tabPanel("Residuals",
                     plotOutput(tabs[4])),
            width = 10)
