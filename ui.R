@@ -5,7 +5,7 @@ payemp.mod <- readRDS("payems-AutoArima.rds")
 gdp.mod <- readRDS("gdp-AutoArima.rds")
 cpi.mod <- readRDS("cpi-AutoArima.rds")
 
-unemp.mod %>% forecast %>% data.frame -> unfcst_df
+unemp.mod %>% forecast %>% data.frame -> unfcst
 payemp.mod %>% forecast %>% data.frame -> payfcst
 gdp.mod  %>% forecast %>% data.frame -> gdpfcst
 cpi.mod %>% forecast %>% data.frame -> cpifcst
@@ -57,7 +57,18 @@ shinyUI(
       
       #mainPanel("This shiny app contains models and forecasts for the economic variables in the forecasting game fredcast"),
       tabItems(
-        tabItem(tabName = "m1", widget(unempTabs)),
+        tabItem(tabName = "m1", 
+                tags$br(""),
+                tags$br(""),
+                tags$br(""),
+                tags$br(""),
+                tags$br(""),
+                tags$br(""),
+                tags$br(""),
+                dygraphOutput("plot.unemp", height = "330px", width = "1200px"),
+                tags$br(""),
+                widget(unempTabs)),
+      
         tabItem(tabName = "m2", widget(payempTabs)),
         tabItem(tabName = "m3", widget(gdpTabs)),
         tabItem(tabName = "m4", widget(cpiTabs))

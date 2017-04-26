@@ -3,9 +3,9 @@ title: fredcast
 account: rampje
 server: shinyapps.io
 appId: 159473
-bundleId: 805319
+bundleId: 805328
 url: https://rampje.shinyapps.io/fredcast/
-when: 1493240383.77258
+when: 1493240929.22962
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: eda, model - UNRATE.R|README.md
+ignoredFiles: eda, model - UNRATE.R|README.md|Rplot.png
