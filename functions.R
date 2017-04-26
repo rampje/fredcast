@@ -4,6 +4,9 @@ library(forecast)
 library(plotly)
 library(fredr)
 library(DT)
+library(dygraphs)
+library(zoo)
+library(lubridate)
 
 key <- "0e510a57a0086df706ac9c8fb852b706"
 
@@ -28,28 +31,23 @@ fitModel <- function(seriesID){
     auto.arima(fredr_series(series_id = "CPIAUCSL"))
   }
 }
-plotModel <- function(model){
+gen_array <- function(forecast_obj){
   
-  fcst <- forecast(model)
+  actuals <- forecast_obj$x
+  lower <- forecast_obj$lower[,2]
+  upper <- forecast_obj$upper[,2]
+  point_forecast <- forecast_obj$mean
   
-  # assumes object is forecast model
-  if(grepl("PAYEMS", model$series)){
-    
-    autoplot(fcst) + ylab("Payroll Employment") +
-      ggtitle(" ") + xlim(1990, 2018) + ylim(105000, 155000)
-    
-  } else if(grepl("A191RL1Q225SBEA", model$series)){
-    
-    autoplot(fcst) + ylab("Real GDP Growth Rate") +
-      ggtitle(" ") + xlim(1990, 2018)
-    
-  } else if(grepl("CPIAUCSL", model$series)){
-    
-    autoplot(fcst) + ylab("CPI Growth Rate") +
-      ggtitle(" ") + xlim(1990, 2018) + ylim(125, 250)
-  } else if(grepl("UNRATE", model$series)){
-    autoplot(fcst) + ylab("Unemployment Rate") + ggtitle(" ")
-  }
+  cbind(actuals, lower, upper, point_forecast)
+}
+plotModel <- function(ts_array){
+    dygraph(ts_array) %>% dyRangeSelector() %>% 
+    dyRangeSelector(dateWindow = c("2015-01-01", "2019-4-01")) %>%
+      dySeries(name = "actuals", label = "actual") %>%
+      dySeries(c("lower","point_forecast","upper"), label = "Predicted") %>%
+      dyLegend(show = "always", hideOnMouseOut = FALSE) %>%
+      dyHighlight(highlightSeriesOpts = list(strokeWidth = 2))
+      #dyOptions(axisLineColor = "navy", gridLineColor = "black")
 }
 forecastTable <- function(model){
   fcst <- forecast(model)
@@ -93,7 +91,7 @@ widget <- function(tabs){
   
   if(grepl("unemp", tabs[1])){
     tabBox(title = "Unemployment Forecast",
-           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "330px"),
+           tabPanel("Forecast Graph", dygraphOutput(tabs[1], height = "330px"),
                     color = "light-blue"),
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
@@ -104,7 +102,7 @@ widget <- function(tabs){
            width = 10)
   } else if(grepl("payemp", tabs[1])){
     tabBox(title = "Monthly Payroll Employment",
-           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "330px"),
+           tabPanel("Forecast Graph", dygraphOutput(tabs[1], height = "330px"),
                     color = "light-blue"),
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
@@ -115,7 +113,7 @@ widget <- function(tabs){
            width = 10)
   } else if(grepl("gdp", tabs[1])){
     tabBox(title = "Quarterly GDP Growth Rate",
-           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "330px"),
+           tabPanel("Forecast Graph", dygraphOutput(tabs[1], height = "330px"),
                     color = "light-blue"),
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
@@ -126,7 +124,7 @@ widget <- function(tabs){
            width = 10)
   } else if(grepl("cpi", tabs[1])){
     tabBox(title = "Consumer Price Index",
-           tabPanel("Forecast Graph", plotOutput(tabs[1], height = "330px"),
+           tabPanel("Forecast Graph", dygraphOutput(tabs[1], height = "330px"),
                     color = "light-blue"),
            tabPanel("Model Summary",
                     verbatimTextOutput(tabs[2])),
@@ -137,3 +135,5 @@ widget <- function(tabs){
            width = 10)
   }
 }
+
+

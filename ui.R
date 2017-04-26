@@ -5,7 +5,7 @@ payemp.mod <- readRDS("payems-AutoArima.rds")
 gdp.mod <- readRDS("gdp-AutoArima.rds")
 cpi.mod <- readRDS("cpi-AutoArima.rds")
 
-unemp.mod %>% forecast %>% data.frame -> unfcst
+unemp.mod %>% forecast %>% data.frame -> unfcst_df
 payemp.mod %>% forecast %>% data.frame -> payfcst
 gdp.mod  %>% forecast %>% data.frame -> gdpfcst
 cpi.mod %>% forecast %>% data.frame -> cpifcst
