@@ -3,11 +3,22 @@ title: "model data.frame"
 output: html_document
 ---
 
-```{r}
-unemp.mod <- readRDS("unrate-AutoArima.rds")
-payemp.mod <- readRDS("payems-AutoArima.rds")
-gdp.mod <- readRDS("gdp-AutoArima.rds")
-cpi.mod <- readRDS("cpi-AutoArima.rds")
+```{r, warning=TRUE, include=FALSE}
+source("functions.R")
 ```
 
+
+```{r}
+unemp.mod <- readRDS("unrate-AutoArima.rds")
+```
+
+### Model Summary
+
+```{r}
+unemp.mod
+```
+
+```{r}
+checkresiduals(unemp.mod)
+```
 

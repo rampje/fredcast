@@ -46,7 +46,7 @@ shinyUI(
                    "FREDcast page"))))),
     
     dashboardBody(
-      fluidRow(
+      fluidPage(
         box(title=paste(fcst_month, "economic forecasts:"),
         valueBoxOutput("unemp", width = 3),
         valueBoxOutput("payroll_emp", width = 3),
@@ -56,31 +56,30 @@ shinyUI(
         width = 11)),
       
       #mainPanel("This shiny app contains models and forecasts for the economic variables in the forecasting game fredcast"),
-      tabItems(
-        tabItem(tabName = "m1", 
-                box(dygraphOutput("plot.unemp"),
-                    width = 6),
-                box(dataTableOutput("unempForecastTable"),
-                    width = 5),
-                box(widget(unempTabs),
-                    width = 11)),
-        tabItem(tabName = "m2",
-                box(dygraphOutput("plot.payemp"),
-                    width = 6),
-                box(widget(payempTabs),
-                    width = 5)),
-        tabItem(tabName = "m3",
-                box(dygraphOutput("plot.gdp"),
-                    width = 6),
-                box(widget(gdpTabs),
-                    width = 5)),
-        tabItem(tabName = "m4",
-                box(dygraphOutput("plot.cpi"),
-                    width = 6),
-                box(widget(cpiTabs),
-                    width = 5))),
-      
-      fluidRow()
+      fluidRow(
+        tabItems(
+          tabItem(tabName = "m1", 
+                  box(dygraphOutput("plot.unemp"),
+                      width = 6),
+                  box(dataTableOutput("unempForecastTable"),
+                     width = 5)),
+                  #fluidRow(includeHTML("model_df.html"))),
+          #tabItem(tabName="u2", includeHTML("model_df.html")),
+          tabItem(tabName = "m2",
+                  box(dygraphOutput("plot.payemp"),
+                      width = 6),
+                  box(dataTableOutput("payempForecastTable"),
+                      width = 5)),
+          tabItem(tabName = "m3",
+                  box(dygraphOutput("plot.gdp"),
+                      width = 6),
+                  box(dataTableOutput("gdpForecastTable"),
+                      width = 5)),
+          tabItem(tabName = "m4",
+                  box(dygraphOutput("plot.cpi"),
+                      width = 6),
+                  box(dataTableOutput("cpiForecastTable"),
+                      width = 5))))
       )
     )
   )

@@ -30,6 +30,8 @@ shinyServer(function(input, output){
     sidebarMenu(
       menuItem("Unemployment", selected = TRUE,
                tabName="m1", icon=icon("line-chart")),
+#               menuSubItem("Unemployment EDA",
+#                           tabName="u2"),
       menuItem("Payroll Employment", 
                tabName="m2", icon=icon("line-chart")),
       menuItem("GDP Growth Rate",
@@ -93,6 +95,7 @@ shinyServer(function(input, output){
   output$cpiSummary <- renderPrint(cpi.mod)
   output$cpiForecastTable <- renderDataTable(cpi.mod %>% forecastTable)
   output$cpiResiduals <- renderPlot(cpi.mod %>% checkresiduals)
+  
 })
 
 
