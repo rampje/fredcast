@@ -55,6 +55,9 @@ shinyUI(
         strong("Click on tabs for more information about an indicator"),
         width = 11)),
       
+      
+      
+      
       #mainPanel("This shiny app contains models and forecasts for the economic variables in the forecasting game fredcast"),
       fluidRow(
         tabItems(
@@ -64,7 +67,7 @@ shinyUI(
                   box(dataTableOutput("unempForecastTable"),
                      width = 5)),
                   #fluidRow(includeHTML("model_df.html"))),
-          #tabItem(tabName="u2", includeHTML("model_df.html")),
+          #tabItem(tabName="u2", ),
           tabItem(tabName = "m2",
                   box(dygraphOutput("plot.payemp"),
                       width = 6),
@@ -80,6 +83,7 @@ shinyUI(
                       width = 6),
                   box(dataTableOutput("cpiForecastTable"),
                       width = 5))))
+      
       )
     )
   )

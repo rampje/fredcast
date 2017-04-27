@@ -28,7 +28,7 @@ shinyServer(function(input, output){
   
   output$menu <- renderMenu({
     sidebarMenu(
-      menuItem("Unemployment", selected = TRUE,
+      menuItem("Unemployment",
                tabName="m1", icon=icon("line-chart")),
 #               menuSubItem("Unemployment EDA",
 #                           tabName="u2"),
