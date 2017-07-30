@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"model data.frame\"\noutput: html_document\n---\n\n```{r, warning=TRUE, include=FALSE}\nsource(\"functions.R\")\n```\n\n\n```{r}\nunemp.mod <- readRDS(\"unrate-AutoArima.rds\")\n```\n\n### Model Summary\n\n```{r}\nunemp.mod\n```\n\n```{r}\ncheckresiduals(unemp.mod)\n```\n\n",
+    "created" : 1492992578957.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3388016644",
+    "id" : "D21A6C09",
+    "lastKnownWriteTime" : 1493260182,
+    "last_content_update" : 1493335907994,
+    "path" : "D:/Projects/fredcast/model_df.Rmd",
+    "project_path" : "model_df.Rmd",
+    "properties" : {
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

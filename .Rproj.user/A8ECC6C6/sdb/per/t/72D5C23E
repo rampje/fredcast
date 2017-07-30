@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "library(forecast)\nlibrary(fredr)\nlibrary(zoo)\n\nsource(\"functions.R\")\n\nunrate <- fredr_series(series_id = \"UNRATE\")\n\nunr.mod <- fitModel(\"UNRATE\")\npay.mod <- fitModel(\"PAYEMS\")\ngdp.mod <- fitModel(\"A191RL1Q225SBEA\")\ncpi.mod <- fitModel(\"CPIAUCSL\")\n\nsaveRDS(unr.mod, file = \"unrate-AutoArima.rds\")\nsaveRDS(pay.mod, file = \"payems-AutoArima.rds\")\nsaveRDS(gdp.mod, file = \"gdp-AutoArima.rds\")\nsaveRDS(cpi.mod, file = \"cpi-AutoArima.rds\")\n\n# convert time series to dataframe for analysis\nunrate_df <- data.frame(\"unemp\"=as.matrix(unrate),\n                        \"month\"=as.Date(unrate))\n\nunrate_df$unemp_L1 <- lag(unrate_df$unemp, k = 1)\n\n# flag for whether unemployment went up or down\nunrate_df$direction <-\n  ifelse(unrate_df$unemp > unrate_df$unemp_L1,\n         \"increase\",\n         ifelse(unrate_df$unemp == unrate_df$unemp_L1,\n                \"same\", \"decrease\"))\nhead(unrate_df)\n",
+    "created" : 1488169288949.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3308031554",
+    "id" : "72D5C23E",
+    "lastKnownWriteTime" : 1492725721,
+    "last_content_update" : 1492725721,
+    "path" : "D:/Projects/fredcast/eda, model - UNRATE.R",
+    "project_path" : "eda, model - UNRATE.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,9 +1,16 @@
+model_dir <- getwd()
+model_dir <- paste0(model_dir, "/models/prod")
+
 source("functions.R")
 
-unemp.mod <- readRDS("unrate-AutoArima.rds")
-payemp.mod <- readRDS("payems-AutoArima.rds")
-gdp.mod <- readRDS("gdp-AutoArima.rds")
-cpi.mod <- readRDS("cpi-AutoArima.rds")
+unemp.mod <- readRDS(paste0(model_dir,
+                            "/unrate-AutoArima.rds"))
+payemp.mod <- readRDS(paste0(model_dir,
+                             "/payems-AutoArima.rds"))
+gdp.mod <- readRDS(paste0(model_dir,
+                          "/gdp-AutoArima.rds"))
+cpi.mod <- readRDS(paste0(model_dir,
+                          "/cpi-AutoArima.rds"))
 
 unemp.mod %>% forecast %>% data.frame -> unfcst
 payemp.mod %>% forecast %>% data.frame -> payfcst

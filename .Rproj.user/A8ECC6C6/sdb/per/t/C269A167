@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "source(\"functions.R\")\n\nunemp.mod <- readRDS(\"unrate-AutoArima.rds\")\npayemp.mod <- readRDS(\"payems-AutoArima.rds\")\ngdp.mod <- readRDS(\"gdp-AutoArima.rds\")\ncpi.mod <- readRDS(\"cpi-AutoArima.rds\")\n\nunemp.mod %>% forecast %>% data.frame -> unfcst\npayemp.mod %>% forecast %>% data.frame -> payfcst\ngdp.mod  %>% forecast %>% data.frame -> gdpfcst\ncpi.mod %>% forecast %>% data.frame -> cpifcst\n\n# automate forecast month name\nfcst_month <- end(unemp.mod$x)\nfcst_month[2] <- fcst_month[2] + 1 \nfcst_month <- months(as.Date(paste0(fcst_month[1], \"-\",\n                                    0,fcst_month[2],  \"-\",1)))\n\nshinyUI(\n  dashboardPage(\n    skin = \"blue\",\n\n    dashboardHeader(title = \"FREDcast dashboard\",\n                    titleWidth = 300),\n                    \n    dashboardSidebar(\n      tags$br(\"This shiny app uses time series models \n               to forecast economic indicators in FRED's \n               'FREDcast' game\"),\n      #width = 200,\n      \n      tags$br(\n        tags$strong(\"indicator selection:\")),\n      \n      tags$br(\n        sidebarMenuOutput(\"menu\")),\n      \n      tags$strong(\"links\"),\n      tags$div(\n        tags$ul(\n          tags$li(\n            tags$a(href=\"https://github.com/rampje/fredcast\", \n                   \"code on github\")),\n          tags$li(\n            tags$a(href=\"https://research.stlouisfed.org/useraccount/fredcast/\",\n                   \"FREDcast page\"))))),\n    \n    dashboardBody(\n      fluidPage(\n        box(title=paste(fcst_month, \"economic forecasts:\"),\n        valueBoxOutput(\"unemp\", width = 3),\n        valueBoxOutput(\"payroll_emp\", width = 3),\n        valueBoxOutput(\"gdp\", width = 3),\n        valueBoxOutput(\"cpi\", width = 3), \n        strong(\"Click on tabs for more information about an indicator\"),\n        width = 11)),\n      \n      \n      \n      \n      #mainPanel(\"This shiny app contains models and forecasts for the economic variables in the forecasting game fredcast\"),\n      fluidRow(\n        tabItems(\n          tabItem(tabName = \"m1\", \n                  box(dygraphOutput(\"plot.unemp\"),\n                      width = 6),\n                  box(dataTableOutput(\"unempForecastTable\"),\n                     width = 5)),\n                  #fluidRow(includeHTML(\"model_df.html\"))),\n          #tabItem(tabName=\"u2\", ),\n          tabItem(tabName = \"m2\",\n                  box(dygraphOutput(\"plot.payemp\"),\n                      width = 6),\n                  box(dataTableOutput(\"payempForecastTable\"),\n                      width = 5)),\n          tabItem(tabName = \"m3\",\n                  box(dygraphOutput(\"plot.gdp\"),\n                      width = 6),\n                  box(dataTableOutput(\"gdpForecastTable\"),\n                      width = 5)),\n          tabItem(tabName = \"m4\",\n                  box(dygraphOutput(\"plot.cpi\"),\n                      width = 6),\n                  box(dataTableOutput(\"cpiForecastTable\"),\n                      width = 5))))\n      \n      )\n    )\n  )\n\n  \n\n     \n  ",
+    "created" : 1488081631869.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3119448319",
+    "id" : "C269A167",
+    "lastKnownWriteTime" : 1493260182,
+    "last_content_update" : 1493260182,
+    "path" : "D:/Projects/fredcast/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+        "source_window_id" : "",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

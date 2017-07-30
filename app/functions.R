@@ -1,6 +1,6 @@
 library(shiny)
 library(shinydashboard)
-library(forecast)
+library('forecast')
 library(plotly)
 library(fredr)
 library(DT)
@@ -18,6 +18,9 @@ gdpTabs <- c("plot.gdp","gdpSummary",
              "gdpForecastTable","gdpResiduals")
 cpiTabs <- c("plot.cpi","cpiSummary",
              "cpiForecastTable","cpiResiduals")
+
+fredr_series <- c("UNRATE","PAYEMS","A191RL1Q225SBEA",
+                  "CPIAUCSL")
 
 fitModel <- function(seriesID){
   # currently only fitting ARIMA models

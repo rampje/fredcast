@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "source(\"functions.R\")\n\nfredr_key(key)\n\nunemp.mod <- readRDS(\"unrate-AutoArima.rds\")\npayemp.mod <- readRDS(\"payems-AutoArima.rds\")\ngdp.mod <- readRDS(\"gdp-AutoArima.rds\")\ncpi.mod <- readRDS(\"cpi-AutoArima.rds\")\n\nunemp.mod %>% forecast %>% data.frame -> unfcst_df\npayemp.mod %>% forecast %>% data.frame -> payfcst\ngdp.mod  %>% forecast %>% data.frame -> gdpfcst\ncpi.mod %>% forecast %>% data.frame -> cpifcst\n\nunfcst <- forecast(unemp.mod)\nunfcst_df <- data.frame(unfcst)\n\npayfcst <- forecast(payemp.mod)\npayfcst_df <- data.frame(payfcst)\n\ngdpfcst <- forecast(gdp.mod)\ngdpfcst_df <- data.frame(gdpfcst)\n\ncpifcst <- forecast(cpi.mod)\ncpifcst_df <- data.frame(cpifcst)\n\nshinyServer(function(input, output){\n  \n  output$menu <- renderMenu({\n    sidebarMenu(\n      menuItem(\"Unemployment\",\n               tabName=\"m1\", icon=icon(\"line-chart\")),\n#               menuSubItem(\"Unemployment EDA\",\n#                           tabName=\"u2\"),\n      menuItem(\"Payroll Employment\", \n               tabName=\"m2\", icon=icon(\"line-chart\")),\n      menuItem(\"GDP Growth Rate\",\n               tabName=\"m3\", icon=icon(\"line-chart\")),\n      menuItem(\"Consumer Price Index\",\n               tabName=\"m4\", icon=icon(\"line-chart\"))\n    )\n  })\n  \n  output$unemp <- renderValueBox({\n    valueBox(\n      paste0(round(unfcst_df$Point.Forecast[2], 2), \"%\"), color=\"navy\",\n      subtitle=\"Unemployment Rate\"\n      #icon = icon(\"arrow-up\")\n      )\n  })\n  \n  output$payroll_emp <- renderValueBox({\n    valueBox(\n      round(payfcst_df$Point.Forecast[2]), color=\"blue\", \n      subtitle=\"Payroll Employment\")\n  })\n  \n  output$gdp <- renderValueBox({\n    valueBox(\n      paste0(round(gdpfcst_df$Point.Forecast[2], 2), \"%\"), color=\"light-blue\",\n      \"GDP Growth Rate\")\n  })\n  \n  output$cpi <- renderValueBox({\n    valueBox(\n      paste0(round(cpifcst_df$Point.Forecast[2]/100, 2), \"%\"), color=\"purple\",\n             \"Consumer Price Index\")\n  })\n  \n  unemp_array <- gen_array(unfcst)\n  payemp_array <- gen_array(payfcst)\n  gdp_array <- gen_array(gdpfcst)\n  cpi_array <- gen_array(cpifcst)\n  # unemployment widget\n  output$plot.unemp <- renderDygraph(unemp_array %>% \n                                       plotModel(\"UNRATE\"))\n  output$unempSummary <- renderPrint(unemp.mod)\n  output$unempForecastTable <- renderDataTable(unemp.mod %>% forecastTable)\n  output$unedmpResiduals <- renderPlot(unemp.mod %>% checkresiduals)\n  # payroll employment widget\n  output$plot.payemp <- renderDygraph(payemp_array %>% \n                                        plotModel(\"PAYEMS\"))\n  output$payempSummary <- renderPrint(payemp.mod)\n  output$payempForecastTable <- renderDataTable(payemp.mod %>% forecastTable)\n  output$payempResiduals <- renderPlot(payemp.mod %>% checkresiduals)\n  # gdp widget\n  output$plot.gdp <- renderDygraph(gdp_array %>% \n                                     plotModel(\"A191RL1Q225SBEA\"))\n  output$gdpSummary <- renderPrint(gdp.mod)\n  output$gdpForecastTable <- renderDataTable(cpi.mod %>% forecastTable)\n  output$gdpResiduals <- renderPlot(gdp.mod %>% checkresiduals)\n  # cpi widget\n  output$plot.cpi <- renderDygraph(cpi_array %>% \n                                     plotModel(\"CPIAUCSL\"))\n  output$cpiSummary <- renderPrint(cpi.mod)\n  output$cpiForecastTable <- renderDataTable(cpi.mod %>% forecastTable)\n  output$cpiResiduals <- renderPlot(cpi.mod %>% checkresiduals)\n  \n})\n\n\n\n",
+    "created" : 1493167408750.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2131024339",
+    "id" : "F36FFCDA",
+    "lastKnownWriteTime" : 1493258990,
+    "last_content_update" : 1493258990593,
+    "path" : "D:/Projects/fredcast/server.R",
+    "project_path" : "server.R",
+    "properties" : {
+        "source_window_id" : "",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
