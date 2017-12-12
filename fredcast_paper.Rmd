@@ -1,0 +1,241 @@
+---
+title: "Final Project Paper"
+author: "Warner Rose"
+output: 
+  word_document:
+    toc: False
+---
+
+# Introduction
+
+This paper explores the process for developing models to forecast economic time series. The focus is on building many models to be tested on out-of-sample data and refined on a regular basis. 
+
+While there is an extensive literature on time series models, this paper will narrow its focus to some exponential smoothing methods and their performance forecasting a particular time series.
+
+# Data 
+
+The Federal Reserve maintains a site that hosts economic data called [FRED (Federal Reserve Economic Data)](https://fred.stlouisfed.org/). They also have a monthly forecasting contest called [**fredcast**](https://research.stlouisfed.org/useraccount/fredcast/). The purpose of fredcast is to forecast the following 4 time series:
+
+* [**Unemployment Rate**](https://fred.stlouisfed.org/series/UNRATE)
+* [**Real GDP**](https://fred.stlouisfed.org/series/GDPC1)
+* [**Payroll Employment**](https://fred.stlouisfed.org/series/PAYEMS)
+* [**Consumer Price Index**](https://fred.stlouisfed.org/series/CPIAUCSL)
+
+This paper will focus only on the **unemployment rate**.
+
+# Packages
+
+```{r message=FALSE, warning=FALSE}
+library(forecast)
+library(fredr)
+library(zoo)
+library(tidyverse)
+library(dygraphs)
+```
+
+The package **forecast** is an extensive library developed by [Rob Hyndman](https://robjhyndman.com/) supporting a variety of time series models. **fredr** is a package for accessing the FRED api. It can be used to download data from FRED. **zoo** provides some helpful functions for date-formatted data. **dygraphs** is a great javascript-based library for visualizing time series data.
+
+```{r include=FALSE}
+api_key <- "0e510a57a0086df706ac9c8fb852b706"
+```
+
+# Unemployment rate time series
+
+Using my FRED api key and **fredr_key** function from the *fredr* package I authenticate my credentials 
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+fredr_key(api_key)
+```
+
+I download the monthly unemployment time series from FRED using **fredr_series**. 
+
+```{r echo=TRUE}
+unr <- fredr_series(series_id='UNRATE')
+head(unr)
+tail(unr)
+```
+
+
+```{r include=FALSE}
+unr2 <- data.frame(unemp=as.matrix(unr),
+                  date=as.yearmon(time(unr)))
+
+unr2$diff_unemp <- c(NA, diff(unr2$unemp, 1))
+```
+
+```{r include=FALSE}
+pay <- fredr_series(series_id="PAYEMS")
+gdp <- fredr_series(series_id='A191RL1Q225SBEA')
+cpi <- fredr_series(series_id="CPIAUCSL")
+
+gdp2 <- data.frame(gdp=as.matrix(gdp),
+                  date=as.yearmon(time(gdp)))
+
+pay2 <- data.frame(payemp=as.matrix(pay),
+                  date=as.yearmon(time(pay)))
+
+cpi2 <- data.frame(cpi=as.matrix(cpi),
+                  date=as.yearmon(time(cpi)))
+
+master <- left_join(unr2, gdp2)
+master <- left_join(master, pay2)
+master <- left_join(master, cpi2)
+```
+
+The plot of the unemploymet rate shows varying **seasonality**.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+master %>% 
+  ggplot(aes(x=date, y=unemp)) + geom_line() + 
+  ggtitle('US Unemployment Rate') + ylab('Unemployment %') 
+```
+
+## Series decomposition
+
+We decompose the time series into **trend**, **seasonal**, and **random** components.
+
+```{r, width = 8}
+plot(decompose(unr))
+```
+
+We will turn our attention to smoothing methods. Exponential smoothing models consist of the terms from the decomposed series. We will see how the choice choice of either additive or multiplicative terms in the model has a large impact on forecasting accuracy.
+
+## Modeling 
+
+### Exponential smoothing
+
+Modeling a time series using exponential smoothing techniques consists of decomposing a time series into additive or multiplicative terms in order to account for seasonality and trend. Below are 2 simple examples of **strictly** additive and multiplicative models on a series **x**.
+
+> $x_t = R_t + T_t + S_t$ (Additive)
+
+> $x_t = R_t * T_t * S_t$ (Multiplicative)
+
+Where $R_t$ is random error, $T_t$ is the trend term, and $S_t$ is the seasonal term.
+
+There are **15** possible models based on components:
+
+```{r include=FALSE}
+smoothing_df <- data_frame(
+  'Trend Component' = c('N (None)','A (Additive)', 'Ad (Additive damped)', 'M (Multiplicative)', 'Md (Multiplicative damped)'),
+  'N (None)' = c('N,N','A,N','Ad,N','M,N','Md,N'), 'A (Additive)' = c('N,A','A,A','Ad,A','M,A','Md,A'),
+  'M (Multiplicative)' = c('N,M','A,M','Ad,M','M,M','Md,M'))
+```
+
+
+```{r echo=FALSE, results='asis'}
+knitr::kable(smoothing_df)
+```
+
+We will fit **3** of the possible 15 models to the unemployment time series and compare forecasts.
+
+The *forecast* package function `ets` can fit any of the models in the above table. The **E** stands for "error", the **T** for "trend", and the **S** for seasonality. As we will see below, these terms need to be specified when fitting a model.
+
+**Exponential smoothing with additive errors** 
+```{r}
+# A = additive
+# M = multiplicative
+# N = none
+mod_ann <- forecast::ets(unr, 'ANN')
+```
+
+**Holt-Winters' with multiplicative errors**
+```{r}
+mod_mam <- forecast::ets(unr, 'MAM')
+```
+
+**Some other model**
+
+
+#### ARIMA
+
+#### Transformed series
+
+### Autocorrelation
+
+models
+
+```{r include=FALSE}
+unr2 <- head(unr, -3)
+ets_mod1 <- forecast::ets(unr2)
+arima_mod1 <- forecast::auto.arima(unr2)
+```
+
+
+```{r include=FALSE}
+gen_array2 <- function(model1, model2){
+  
+  forecast_obj1 <- forecast(model1)
+  forecast_obj2 <- forecast(model2)
+  
+  actuals <- forecast_obj1$x
+  forecast1 <- forecast_obj1$mean
+  forecast2 <- forecast_obj2$mean
+  
+  cbind(unr, forecast1, forecast2)
+}
+```
+
+
+```{r}
+# rolling ets model
+ets_mod2 <- forecast::ets(head(unr, -2))
+ets_mod3 <- forecast::ets(head(unr, -1))
+```
+
+```{r include=FALSE}
+ets_fr1 <- forecast(ets_mod1)
+ets_fr2 <- forecast(ets_mod2)
+ets_fr3 <- forecast(ets_mod3)
+
+arima_fr1 <- forecast(arima_mod1)
+
+rolling_ets_fr <- data.frame(cbind(unr, ets_fr1$mean, ets_fr2$mean, ets_fr3$mean))
+rolling_ets_fr$date <- c(as.yearmon(time(unr)), rep(NA, nrow(rolling_ets_fr) - length(unr)))
+
+rolling_ets_fr <- rolling_ets_fr %>% 
+                  filter(date %in% as.yearmon(c('Sep 2017','Oct 2017','Nov 2017')))
+```
+
+```{r}
+rolling_ets_fr2 <- reshape2::melt(rolling_ets_fr, 
+                                 id.vars = 'date')
+```
+
+```{r include=FALSE}
+library(zoo)
+
+fr2 <- forecast(arima_mod1)
+
+plot_array2 <- data.frame(cbind(unr, ets_fr1$mean, fr2$mean))
+plot_array2$date <- c(as.yearmon(time(unr)), rep(NA, nrow(plot_array2) - length(unr)))
+
+filt3 <- which(rowSums(is.na(plot_array2))==0)
+forecast_compare <- plot_array2[filt3,]
+```
+
+
+```{r echo=FALSE}
+plot_array2 <- gen_array2(ets_mod1, arima_mod1)
+
+```
+
+```{r include=FALSE}
+#forecast_compare <- forecast_compare %>% 
+ #                   mutate(mod1_err = unr - ets_fr1$mean,
+  #                         mod2_err = unr - arima_fr1$mean)
+```
+
+```{r echo=FALSE}
+#forecast_compare %>% 
+ # select(date, mod1_err,mod2_err) %>% 
+  #reshape2::melt(id.vars = 'date') %>% 
+  #ggplot(aes(x=as.character(date), y=value, fill=variable)) +
+   # geom_bar(position = 'dodge', stat='identity')
+```
+
+
+
+
+
+
+Making gdp monthly

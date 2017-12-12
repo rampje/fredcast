@@ -3,22 +3,71 @@ title: "model data.frame"
 output: html_document
 ---
 
+```{r, message=FALSE, warning=FALSE}
+library(zoo)
+library(tidyverse)
+library(plotly)
+```
+
 ```{r, warning=TRUE, include=FALSE}
-source("functions.R")
+model_dir <- getwd()
+model_dir <- paste0(model_dir, "/models/prod")
+```
+
+```{r}
+source(paste0(getwd(),"/app/functions.R"))
 ```
 
 
 ```{r}
-unemp.mod <- readRDS("unrate-AutoArima.rds")
-```
-
-### Model Summary
-
-```{r}
-unemp.mod
+all_series <- c("UNRATE","PAYEMS","A191RL1Q225SBEA",
+                "CPIAUCSL")
 ```
 
 ```{r}
-checkresiduals(unemp.mod)
+unrate <- fredr_series(series_id = "UNRATE")
+unrate <- tibble("date" = as.yearmon(time(unrate)),
+                     "unrate" = unrate)
+unrate$unrate_L1 <- lag(unrate$unrate, 1)
+unrate$L1_diff <- unrate$unrate-unrate$unrate_L1
 ```
+
+```{r}
+unrate$delta <- c(unrate$unrate / unrate$unrate_L1) - 1
+unrate$year <- year(unrate$date)
+unrate$decade <- paste0(substr(unrate$year, 0, 3), "0s")
+```
+
+```{r}
+p1 <- unrate %>%
+  ggplot(aes(delta,fill=decade)) + 
+  geom_histogram(binwidth = 0.01) 
+ggplotly(p1)
+```
+
+```{r}
+ur <- fredr_series(series_id ="UNRATE")
+
+ur2 <- ur[-length(ur)]
+
+models <- vector("list", 8)
+
+for(x in seq_along(models)){
+  if(x < 4){
+    models[[x]] <- Arima(ur2, order = c(x,1,0))
+    } else if(x < 7){
+    models[[x]] <- Arima(ur2, order = c(0,1,x-3))
+    } else{
+      models[[x]] <- Arima(ur2, order = c(x-6, 1, x-6))
+    }}
+
+
+fcsts <- map(models, function(x) data.frame(forecast(x)))
+# forecasts
+map_dbl(fcsts, function(x) x$Point.Forecast[1])
+# actuals
+ur[length(ur)]
+```
+
+
 
