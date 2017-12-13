@@ -1,9 +1,9 @@
 ---
-title: "Final Project Paper"
+title: "Final Project"
 author: "Warner Rose"
 output: 
-  word_document:
-    toc: False
+  html_document:
+    toc: True
 ---
 # Introduction
 
@@ -123,13 +123,22 @@ master <- left_join(master, cpi2)
 
 The plot of the unemploymet rate shows varying **seasonality**.
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 min_date <- min(master$date)
 max_date <- max(master$date)
 master %>% 
   ggplot(aes(x=date, y=unemp)) + geom_line() + 
   ggtitle(paste0('US monthly unemployment rate, ',
                  min_date, ' - ', max_date)) + ylab('Unemployment %') 
+```
+
+```{r echo=FALSE}
+title <- paste0('US monthly unemployment rate, ',
+                 min_date, ' - ', max_date)
+dygraph(unr, main=title) %>% dyRangeSelector() %>% 
+  dyHighlight(highlightCircleSize = 4)
+              
+  
 ```
 
 We can decompose the time series into **trend**, **seasonal**, and **random/error** components.
@@ -197,9 +206,9 @@ All model forecasts and actuals are combined into formats **ggplot2** (long form
 ets_forecasts1 <- gen_forecast_array(ets_models)
 ```
 
-## 6 month forecast performance
+## Forecast comparison {.tabset .tabset-fade .tabset-pills}
 
-The following plots show short to medium term forecasts from models fit with **`r max(as.yearmon(time(unr2)))`** as the latest month of data. The holdout sample is included in the plot.
+### 6 month forecast
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(scales)
@@ -227,46 +236,10 @@ p1 <- ets_forecasts1[[2]] %>%
 p1
 ```
 
-```{r include=FALSE}
-filter_dates <- max(ets_forecasts1[[1]]$date[!is.na(ets_forecasts1[[1]]$actuals)])
-filter_dates <- rev(filter_dates - 1/12 * 0:5)
-```
+The following plots show short to medium term forecasts from models fit with **`r max(as.yearmon(time(unr2)))`** as the latest month of data. The holdout sample is included in the plot.
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
-forecast_error <- ets_forecasts1[[1]] %>% filter(date %in% filter_dates)
-forecast_error$actuals <- tail(unr,6)
-forecast_error2 <- reshape2::melt(forecast_error, id.vars=c('date','actuals')) 
 
-forecast_error2$error <- as.numeric(forecast_error2$actuals) -
-                          as.numeric(forecast_error2$value)
-```
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-forecast_error2 %>% 
-  ggplot(aes(x=factor(months(date,abbreviate=T),
-                         levels=c('Jul','Aug','Sep','Oct','Nov','Dec')), y=abs(error), fill=variable)) + 
-  geom_bar(stat='identity', position='dodge') +
-  labs(x='Month', y='Absolute error', title='forecasting error by model type - 6 months out') +
-  scale_fill_discrete(labels=c('Constant','Additive', 'Multiplicative'), name='Model') +
-  theme(
-    legend.position = 'top',
-    legend.title=element_blank(),
-    axis.text.x = element_text(angle=45, hjust=1) 
-  ) + facet_grid(.~as.factor(variable))
-  
-```
-
- The model consisting of multiplicative terms **MMM** had the lowest error for medium term (3-6 month) forecasts. The constant model **ANN** was the worst performing model.
-
-In general, time series model error increases rapidly the further we forecast into the future. 
-
-## 1 month forecast performance
-
-The above scenario of fitting models each forecasting 6 months out is not the same scenario as in fredcast. Fredcast is always based on forecasting 1 month into the future.
-
-We will now fit the same models but this time simulate 6 separate fittings of models June-November. These models each forecast 1 month ahead.
-
-Details of the algorithm for fitting multiple models on a rolling hold-out sample are in the source code.
+### 1 month forecast
 
 ```{r include=FALSE}
 model_type
@@ -370,6 +343,50 @@ graph_df1 %>%
 
 ```
 
+The above scenario of fitting models each forecasting 6 months out is not the same scenario as in fredcast. Fredcast is always based on forecasting 1 month into the future.
+
+We will now fit the same models but this time simulate 6 separate fittings of models June-November. These models each forecast 1 month ahead.
+
+Details of the algorithm for fitting multiple models on a rolling hold-out sample are in the source code.
+
+## Forecasting error {.tabset .tabset-fade .tabset-pills}
+
+### 6 month forecast error
+
+```{r include=FALSE}
+filter_dates <- max(ets_forecasts1[[1]]$date[!is.na(ets_forecasts1[[1]]$actuals)])
+filter_dates <- rev(filter_dates - 1/12 * 0:5)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+forecast_error <- ets_forecasts1[[1]] %>% filter(date %in% filter_dates)
+forecast_error$actuals <- tail(unr,6)
+forecast_error2 <- reshape2::melt(forecast_error, id.vars=c('date','actuals')) 
+
+forecast_error2$error <- as.numeric(forecast_error2$actuals) -
+                          as.numeric(forecast_error2$value)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+forecast_error2 %>% 
+  ggplot(aes(x=factor(months(date,abbreviate=T),
+                         levels=c('Jul','Aug','Sep','Oct','Nov','Dec')), y=abs(error), fill=variable)) + 
+  geom_bar(stat='identity', position='dodge') +
+  labs(x='Month', y='Absolute error', title='forecasting error by model type - 6 months out') +
+  scale_fill_discrete(labels=c('Constant','Additive', 'Multiplicative'), name='Model') +
+  theme(
+    legend.position = 'top',
+    legend.title=element_blank(),
+    axis.text.x = element_text(angle=45, hjust=1) 
+  ) + facet_grid(.~as.factor(variable))
+  
+```
+
+ The model consisting of multiplicative terms **MMM** had the lowest error for medium term (3-6 month) forecasts. The constant model **ANN** was the worst performing model.
+
+In general, time series model error increases rapidly the further we forecast into the future. 
+
+### 1 month forecasting error
 
 ```{r include=FALSE}
 filter_dates <- as.yearmon('June 2017')
@@ -447,6 +464,8 @@ final2 %>%
     axis.text.x = element_text(angle=45, hjust=1) 
   )
 ```
+
+
 
 We see that the models with seasonal and trend terms perform better than the simpler constant model in terms of forecasting accuracy. 
 
